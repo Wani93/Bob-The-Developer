@@ -36,7 +36,6 @@ export const ContractContextProvider = ({ children }: PropsWithChildren) => {
       signer
     );
     setContract(contract);
-    debugger;
 
     const [maxTokenCount, currentTokenCount] = (
       (await contract.getStatus()) as BigInt[]
