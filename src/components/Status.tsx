@@ -22,7 +22,6 @@ export default function Status() {
       });
     };
 
-    debugger;
     if (wallet.accounts.length) {
       fetchStatus();
     }
