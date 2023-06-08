@@ -6,6 +6,7 @@ import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useContract } from "@/hooks/useContract";
+import LoadingMask from "@/components/UI/molecules/LoadingMask";
 
 export default function Page() {
   const { contract, updateState } = useContract();
@@ -14,7 +15,7 @@ export default function Page() {
     url: "/random.png",
     alt: "bob",
   };
-
+  const [loading, setLoading] = useState(false);
   const [ability, setAbility] = useState({
     backend: Math.ceil(Math.random() * 5),
     frontend: Math.ceil(Math.random() * 5),
@@ -28,15 +29,22 @@ export default function Page() {
   };
 
   const handleClick = async () => {
-    const overrides = {
-      value: ethers.parseEther("0.01"),
-    };
-    const transaction = await contract!.mintNFT(overrides);
+    try {
+      setLoading(true);
+      const overrides = {
+        value: ethers.parseEther("0.01"),
+      };
+      const transaction = await contract!.mintNFT(overrides);
 
-    const response = await transaction.wait();
-    const tokenId = parseInt(response.logs[0].topics[3]);
+      const response = await transaction.wait();
+      const tokenId = parseInt(response.logs[0].topics[3]);
 
-    router.push(`/assets/${tokenId}`);
+      router.push(`/assets/${tokenId}`);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -56,6 +64,7 @@ export default function Page() {
 
   return (
     <div className="flex flex-col items-center">
+      {loading && <LoadingMask />}
       <NFTCard
         name="Bob The Developer"
         image={image}
