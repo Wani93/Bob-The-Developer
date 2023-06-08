@@ -14,6 +14,10 @@ export default function Page() {
   const [loading, setLoading] = useState(true);
 
   const fetchData = async (tokenId: number) => {
+    if (!currentTokens) {
+      return;
+    }
+
     setLoading(true);
     fetch(`/api/metadata/${tokenId}`)
       .then((response) => response.json())
